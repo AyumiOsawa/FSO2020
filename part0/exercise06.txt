@@ -1,0 +1,6 @@
+title https://fullstack-exampleapp.herokuapp.com/spa
+
+note left of Browser: When a new comment is posted
+Browser -> Server: Post now_note_spa
+Server --> Browser: 201 Created
+note over Server, Browser : json data
