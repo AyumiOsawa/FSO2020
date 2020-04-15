@@ -1,3 +1,5 @@
+// SPA diagram, submission of a new comment by POST
+
 title https://fullstack-exampleapp.herokuapp.com/spa
 
 note left of Browser: When a new comment is posted

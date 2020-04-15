@@ -1,0 +1,31 @@
+// Standard web page diagram
+
+title https://fullstack-exampleapp.herokuapp.com/notes
+
+Browser->Server: Post
+note right of Browser: Post a new comment
+Server-->Browser: 302 Found
+
+Browser->Server: Get notes.html
+Server-->Browser: 200 Ok
+note over Server, Browser : notes.html
+
+Browser->Server: Get main.css
+Server-->Browser: 200 Ok
+note over Server, Browser : main.css
+
+Browser->Server: Get main.js
+Server-->Browser: 200 Ok
+note over Server, Browser : main.js
+
+Browser->Server: Get data.json
+Server-->Browser: 200 Ok
+note over Server, Browser : data.json
+
+Browser->Server: Get tooltip.html
+Server-->Browser: 200 Ok
+note over Server, Browser : tooltip.html
+
+Browser->Server: Get tooltip_not_found.html
+Server-->Browser: 200 Ok
+note over Server, Browser : tooltip_not_found.html
