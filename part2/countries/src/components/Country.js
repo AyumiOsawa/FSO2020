@@ -1,4 +1,5 @@
 import React from 'react';
+import Weather from './Weather';
 
 const Country = ({result}) => {
   return (
@@ -23,6 +24,9 @@ const Country = ({result}) => {
           className="flag"
         />
       </div>
+      <Weather
+        result={result}
+      />
     </div>
   )
 }

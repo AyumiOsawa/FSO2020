@@ -18,7 +18,9 @@ const ResultsList = ({result}) => {
             </button>
             <br />
             {countryDisplay ? (
-              <Country result={result} />
+              <Country
+                result={result} 
+              />
             ):(
               <></>
             )}
