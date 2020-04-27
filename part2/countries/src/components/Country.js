@@ -2,6 +2,7 @@ import React from 'react';
 import Weather from './Weather';
 
 const Country = ({result, countryDisplay}) => {
+
   return (
     <div>
       <h2>{result.name}</h2>
