@@ -6,7 +6,6 @@ import axios from 'axios';
 const App = () => {
   const [ filterWord, setFilterWord] = useState('');
   const [ allResults, setAllResults ] = useState([]);
-  // const [ filteredResults, setfilteredResults ] = useState([]);
 
   const handleInput = (event) => {
     setFilterWord(event.target.value)
