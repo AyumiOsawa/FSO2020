@@ -1,7 +1,7 @@
 import React from 'react';
 import Weather from './Weather';
 
-const Country = ({result}) => {
+const Country = ({result, countryDisplay}) => {
   return (
     <div>
       <h2>{result.name}</h2>
@@ -26,6 +26,7 @@ const Country = ({result}) => {
       </div>
       <Weather
         result={result}
+        countryDisplay={countryDisplay}
       />
     </div>
   )

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Country from './Country';
 import ResultsList from './ResultsList';
 
@@ -6,7 +6,11 @@ import ResultsList from './ResultsList';
 const Results = (props) => {
   const {filterWord, allResults, handleFilter} = props;
   const filteredResults = handleFilter(allResults, filterWord);
+  const [ countryDisplay, setCountryDisplay ] = useState(false);
 
+  const handleClickShow = () => {
+    setCountryDisplay(!countryDisplay)
+  }
 
   return (
     filteredResults.length > 10 ?
@@ -17,7 +21,10 @@ const Results = (props) => {
       ) : (
         filteredResults.length === 1 ?
         (
-          <Country result={filteredResults[0]} />
+          <Country
+            result={filteredResults[0]}
+            countryDisplay={countryDisplay}
+          />
         ) : (
           <div>
             <p>
@@ -28,6 +35,8 @@ const Results = (props) => {
                 return (
                   <ResultsList
                     result={result}
+                    handleClickShow={handleClickShow}
+                    countryDisplay={countryDisplay}
                     key={i}
                   />
                 )

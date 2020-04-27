@@ -1,12 +1,7 @@
-import React, { useState }  from 'react';
+import React from 'react';
 import Country from './Country';
 
-const ResultsList = ({result}) => {
-  const [ countryDisplay, setCountryDisplay ] = useState(false);
-
-  const handleClickShow = () => {
-    setCountryDisplay(!countryDisplay)
-  }
+const ResultsList = ({result, handleClickShow, countryDisplay}) => {
 
   return (
           <div>
@@ -19,7 +14,8 @@ const ResultsList = ({result}) => {
             <br />
             {countryDisplay ? (
               <Country
-                result={result} 
+                result={result}
+                countryDisplay={countryDisplay}
               />
             ):(
               <></>

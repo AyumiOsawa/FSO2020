@@ -1,20 +1,33 @@
 import React, { useState, useEffect} from 'react';
 import axios from 'axios';
 
-const Weather = ({result}) => {
+const Weather = ({result, countryDisplay}) => {
   const [ weatherInfo, setWeatherInfo ] = useState({});
   const APIAccessKey = process.env.REACT_APP_API_KEY;
   const url = 'http://api.weatherstack.com/current?'
   const fullURL = `${url}access_key=${APIAccessKey}&query=${result.name}`;
 
   useEffect(() => {
-    axios
-      .get(fullURL)
-      .then(response => {
-        console.log('response.data', response.data)
-        setWeatherInfo(response.data.current)
-      })
-  }, [])
+    const cancelToken = axios.CancelToken;
+    const source = cancelToken.source();
+
+    try {
+      axios
+        .get(fullURL, { cancelToken: source.token })
+        .then(response => {
+          console.log('response.data', response.data)
+          setWeatherInfo(response.data.current)
+        })
+    } catch (error) {
+      if (axios.isCancel(error)) {
+          console.log("cancelled");
+        } else {
+          throw error;
+        }
+    }
+
+    return () => source.cancel();
+  }, [countryDisplay])
 
 
   return (
