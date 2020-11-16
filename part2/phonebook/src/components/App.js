@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import Filter from './Filter'
-import PersonForm from './PersonForm'
-import Persons from './Persons'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import Filter from './Filter';
+import PersonForm from './PersonForm';
+import Persons from './Persons';
+import numberService from '/service/numberService';
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
@@ -34,14 +34,14 @@ const App = () => {
       const newObj = {
         name: newName,
         number: newNumber,
-      }
-      axios.post(baseUrl, newObj)
-      .then(response => {
-        console.log(response);
-        setPersons(persons.concat(response.data));
-        setNewName('');
-        setNewNumber('');
-      });
+      };
+
+      numberService.post(newObj)
+        .then(data => {
+          setPersons(persons.concat(data));
+          setNewName('');
+          setNewNumber('');
+        });
     }
   }
 
@@ -59,14 +59,15 @@ const App = () => {
     }
   }
 
-
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
-  }, [])
+    // axios
+    //   .get('http://localhost:3001/persons')
+    //   .then(response => {
+    numberService.getAll()
+      .then(data => {
+        setPersons(data)
+      });
+  }, []);
 
 
   return (
@@ -86,13 +87,16 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      { filterByName(searchWord).map((person, i) =>
+      <ul>
+      { filterByName(searchWord).map((person) =>
+        <li key={`${person.name}+${person.number}`}>
           <Persons
-            key={`${person}+${i}`}
-            person = {person}
+            person={person}
           />
+        </li>
         )
       }
+      </ul>
     </div>
   )
 }
