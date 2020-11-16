@@ -9,7 +9,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchWord, setSearchWord ] = useState('')
-
+  const baseUrl = 'http://localhost:3001/persons';
 
   const handleInputName = (event) => {
     setNewName(event.target.value)
@@ -27,43 +27,43 @@ const App = () => {
 
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     if(validateInput(newName)) {
-      window.alert(`${newName} is already added to phonebook`)
+      window.alert(`${newName} is already added to phonebook`);
     } else {
       const newObj = {
         name: newName,
         number: newNumber,
       }
-      setPersons(persons.concat(newObj));
-      setNewName('');
-      setNewNumber('');
+      axios.post(baseUrl, newObj)
+      .then(response => {
+        console.log(response);
+        setPersons(persons.concat(response.data));
+        setNewName('');
+        setNewNumber('');
+      });
     }
   }
-
 
   const validateInput = input => {
     return persons.find(person => person.name === input);
   }
 
-
-  const filterByName = input => {
-    if(input === '') {
-      return persons
+  const filterByName = searchWord => {
+    if(searchWord === '') {
+      return persons;
     } else {
       return persons.filter(person => {
-        return person.name.toLowerCase().includes(input.toLowerCase())
+        return person.name.toLowerCase().includes(searchWord.toLowerCase())
       })
     }
   }
 
 
   useEffect(() => {
-    console.log('effect')
     axios
       .get('http://localhost:3001/persons')
       .then(response => {
-        console.log(response.data)
         setPersons(response.data)
       })
   }, [])
@@ -86,11 +86,13 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons
-        searchWord={searchWord}
-        filterByName={filterByName}
-      />
-      <div>debug: {newName}</div>
+      { filterByName(searchWord).map((person, i) =>
+          <Persons
+            key={`${person}+${i}`}
+            person = {person}
+          />
+        )
+      }
     </div>
   )
 }
