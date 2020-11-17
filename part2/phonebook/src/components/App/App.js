@@ -25,7 +25,26 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if(validateInput(newName)) {
-      window.alert(`${newName} is already added to phonebook`);
+      const confirmation = window.confirm(`${newName} is already added to the phonebook. Do you want to replace the old number with a new one?`);
+
+        if (confirmation) {
+          const personToUpdate = persons.filter(person => person.name === newName)[0];
+          const newObj = {
+            ...personToUpdate,
+            number: newNumber,
+          };
+
+          numberService.update(personToUpdate.id, newObj)
+            .then(data => {
+              setPersons(
+                persons.map(person =>
+                  person.id !== personToUpdate.id ? person : newObj
+                )
+              );
+              setNewName('');
+              setNewNumber('');
+            });
+        }
     } else {
       const newObj = {
         name: newName,
@@ -46,9 +65,8 @@ const App = () => {
     const confirmation = window.confirm("do you want delete this contact?");
 
     if(confirmation) {
-      const result = numberService.remove(person.id)
+      numberService.remove(person.id)
       .then(() => {
-        console.log(result);
         setPersons(persons.filter(n => n.id !== person.id));
       })
       .catch(() => {
