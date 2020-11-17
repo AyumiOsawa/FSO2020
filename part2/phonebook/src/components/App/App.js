@@ -10,7 +10,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchWord, setSearchWord ] = useState('')
-  const [ message, setMessage ] = useState(null);
+  const [ message, setMessage ] = useState([null, null]);
 
   const handleInputName = (event) => {
     setNewName(event.target.value)
@@ -37,20 +37,34 @@ const App = () => {
           };
 
           numberService.update(personToUpdate.id, newObj)
+            .then(response => response.data)
             .then(data => {
               setPersons(
                 persons.map(person =>
-                  person.id !== personToUpdate.id ? person : newObj
+                  person.id !== personToUpdate.id ? person : data
                 )
               );
               setNewName('');
               setNewNumber('');
-              setMessage(`Updated ${data.name}`);
+              setMessage([
+                `Updated ${data.name}`,
+                'success'
+              ]);
 
               setTimeout(() => {
-                setMessage(null);
+                setMessage(getDefaultMessage());
               }, 3000);
-            });
+            })
+            .catch(error => {
+              setMessage([
+                `Information of ${newObj.name} has already been removed from server.`,
+                'error'
+              ]);
+              setTimeout(() => {
+                setMessage(getDefaultMessage());
+              }, 5000);
+              setPersons(persons.filter(n => n.id !== personToUpdate.id));
+            })
         }
     } else {
       const newObj = {
@@ -63,10 +77,13 @@ const App = () => {
           setPersons(persons.concat(data));
           setNewName('');
           setNewNumber('');
-          setMessage(`Added ${data.name}`);
+          setMessage([
+            `Added ${data.name}`,
+            'success'
+          ]);
 
           setTimeout(() => {
-            setMessage(null);
+            setMessage(getDefaultMessage());
           }, 3000);
         });
     }
@@ -74,22 +91,28 @@ const App = () => {
 
   const handleDelete = (event, person) => {
     event.preventDefault();
-    const confirmation = window.confirm("do you want delete this contact?");
+    const confirmation = window.confirm(`do you want delete ${person.name}?`);
 
     if(confirmation) {
       numberService.remove(person.id)
       .then(() => {
         setPersons(persons.filter(n => n.id !== person.id));
       })
-      .catch(() => {
-        alert(`The address of ${person.name} has been already deleted`);
+      .catch(error => {
+        setMessage([
+          `Information of ${person.name} has already been removed from server.`,
+          'error'
+        ]);
+        setTimeout(() => {
+          setMessage(getDefaultMessage());
+        }, 5000);
         setPersons(persons.filter(n => n.id !== person.id));
       })
     }
   }
 
-  const validateInput = input => {
-    return persons.find(person => person.name === input);
+  const validateInput = (inputName) => {
+    return persons.find(person => person.name === inputName);
   }
 
   const filterByName = searchWord => {
@@ -101,6 +124,10 @@ const App = () => {
       })
     }
   }
+
+    const getDefaultMessage = () => {
+      return [null, null];
+    };
 
   useEffect(() => {
     numberService.getAll()
