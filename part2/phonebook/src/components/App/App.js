@@ -1,30 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import Filter from './Filter';
-import PersonForm from './PersonForm';
-import Persons from './Persons';
-import numberService from '../service/numberService';
+import Filter from '../Filter/Filter';
+import PersonForm from '../PersonForm/PersonForm';
+import Person from '../Person/Person';
+import numberService from '../../service/numberService';
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchWord, setSearchWord ] = useState('')
-  const baseUrl = 'http://localhost:3001/persons';
 
   const handleInputName = (event) => {
     setNewName(event.target.value)
   }
 
-
   const handleInputNumber = (event) => {
     setNewNumber(event.target.value)
   }
 
-
   const handleInputSearchWord = (event) => {
     setSearchWord(event.target.value)
   }
-
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -42,6 +38,23 @@ const App = () => {
           setNewName('');
           setNewNumber('');
         });
+    }
+  }
+
+  const handleDelete = (event, person) => {
+    event.preventDefault();
+    const confirmation = window.confirm("do you want delete this contact?");
+
+    if(confirmation) {
+      const result = numberService.remove(person.id)
+      .then(() => {
+        console.log(result);
+        setPersons(persons.filter(n => n.id !== person.id));
+      })
+      .catch(() => {
+        alert(`The address of ${person.name} has been already deleted`);
+        setPersons(persons.filter(n => n.id !== person.id));
+      })
     }
   }
 
@@ -87,8 +100,9 @@ const App = () => {
       <ul>
       { filterByName(searchWord).map((person) =>
         <li key={`${person.name}+${person.number}`}>
-          <Persons
+          <Person
             person={person}
+            handleDelete={handleDelete}
           />
         </li>
         )
@@ -98,4 +112,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App;

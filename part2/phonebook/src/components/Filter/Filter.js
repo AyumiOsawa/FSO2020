@@ -1,10 +1,11 @@
-import React from 'react'
+import React from 'react';
+import './Filter.css';
 
 const Filter = (props) => {
 
   return (
-    <form>
-      filter by name: <input
+    <form className="form__filter">
+      Filter by name: <input
                         onChange={props.handleInputSearchWord}
                         value={props.searchWord}
                       />
