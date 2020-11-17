@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Filter from '../Filter/Filter';
 import PersonForm from '../PersonForm/PersonForm';
 import Person from '../Person/Person';
+import Notification from '../Notification/Notification';
 import numberService from '../../service/numberService';
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchWord, setSearchWord ] = useState('')
+  const [ message, setMessage ] = useState(null);
 
   const handleInputName = (event) => {
     setNewName(event.target.value)
@@ -43,6 +45,11 @@ const App = () => {
               );
               setNewName('');
               setNewNumber('');
+              setMessage(`Updated ${data.name}`);
+
+              setTimeout(() => {
+                setMessage(null);
+              }, 3000);
             });
         }
     } else {
@@ -56,6 +63,11 @@ const App = () => {
           setPersons(persons.concat(data));
           setNewName('');
           setNewNumber('');
+          setMessage(`Added ${data.name}`);
+
+          setTimeout(() => {
+            setMessage(null);
+          }, 3000);
         });
     }
   }
@@ -101,6 +113,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification
+        message={message}
+      />
       <Filter
         handleInputSearchWord={handleInputSearchWord}
         searchWord={searchWord}
