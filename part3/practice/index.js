@@ -55,7 +55,7 @@ let notes = [
 const express = require('express');
 const app = express();
 
-// use the express json-parser
+// use the middlewares (in the order from top to bottom)
 app.use(express.json());
 
 // # these event handlers are called every time when GET request is made to '/'
@@ -134,6 +134,30 @@ const generateID = () => {
   : 0
   return maxId + 1;
 }
+
+// # creating my own middleware:
+// # next in the arguments is a function that pass the request to the next
+// # middleware. (?)
+// # A middleware needs to be specified in app.use(), and executed in the order
+// # of the use() methods in which they are called.
+const requestLogger = (request, response, next) => {
+  console.log('Mehtod:', request.method);
+  console.log('Path:', request.path);
+  console.log('Body:', request.body);
+  console.log('--------');
+  next();
+}
+
+app.use(requestLogger);
+
+// # another middleware to handle the request to the unknown endpoint
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({
+    error: 'unknown endpoint'
+  })
+}
+
+app.use(unknownEndpoint);
 
 const PORT = 3001;
 app.listen(PORT, () => {
