@@ -60,6 +60,9 @@ const app = express();
 app.use(express.json());
 // # use cors middleware to allow serving resources from different origins.
 app.use(cors());
+// # let express show the static content
+app.use(express.static('build'));
+
 // # these event handlers are called every time when GET request is made to '/'
 // # and to '/api/notes'.
 // # api.get() method takes 2 params: request and response.
