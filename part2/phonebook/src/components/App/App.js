@@ -130,9 +130,11 @@ const App = () => {
     };
 
   useEffect(() => {
+    console.log('attempting the initial fetch');
     numberService.getAll()
       .then(data => {
         setPersons(data)
+        console.log('fetched and set the initial data');
       });
   }, []);
 
