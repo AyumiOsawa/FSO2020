@@ -53,11 +53,13 @@ let notes = [
 //
 // # this app(, which is express(),) is a FUNCTION that creates an express app.
 const express = require('express');
+const cors = require('cors');
 const app = express();
 
-// use the middlewares (in the order from top to bottom)
+// # use the middlewares (in the order from top to bottom)
 app.use(express.json());
-
+// # use cors middleware to allow serving resources from different origins.
+app.use(cors());
 // # these event handlers are called every time when GET request is made to '/'
 // # and to '/api/notes'.
 // # api.get() method takes 2 params: request and response.
@@ -159,7 +161,11 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint);
 
-const PORT = 3001;
+// # For local testing
+// const PORT = 3001;
+
+// # For deploying through Heroku
+const PORT = process.env.port || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 })
