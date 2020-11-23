@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/ayumi/.nvm/versions/node/v12.18.4/bin/node /usr/local/Cellar/yarn/1.22.10/libexec/bin/yarn.js install
+  /Users/ayumi/.nvm/versions/node/v12.18.4/bin/node /usr/local/Cellar/yarn/1.22.10/libexec/bin/yarn.js deploy
 
 PATH: 
   /Users/ayumi/.nvm/versions/node/v12.18.4/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/user/local/opt/php@7.3/bin:/Applications/mampstack-7.3.13-0/mysql/bin :/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/ayumi/.composer/vendor/bin:/Users/ayumi/Applications/SimNIBS/bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  SyntaxError: /Users/ayumi/Desktop/FSO2020/part3/practice/package.json: Unexpected token } in JSON at position 382
+  SyntaxError: /Users/ayumi/Desktop/FSO2020/part3/practice/package.json: Unexpected string in JSON at position 238
       at JSON.parse (<anonymous>)
       at /usr/local/Cellar/yarn/1.22.10/libexec/lib/cli.js:1625:59
       at Generator.next (<anonymous>)
@@ -31,15 +31,20 @@ npm manifest:
       "start": "node index.js",
       "dev": "nodemon index.js",
       "test": "echo \"Error: no test specified\" && exit 1"
+      "build:ui": "rm -rf build && cd ../../osa2/materiaali/notes-new && npm run build --prod && cp -r build ../../../osa3/notes-backend/",
+      "deploy": "git push heroku main",
+      "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
+      "logs:prod": "heroku logs --tail"
     },
     "author": "Ayumi",
     "license": "MIT",
     "dependencies": {
+      "cors": "^2.8.5",
       "express": "^4.17.1"
     },
     "devDependencies": {
       "nodemon": "^2.0.2"
-    },
+    }
   }
 
 yarn manifest: 
@@ -280,6 +285,14 @@ Lockfile:
     version "0.4.0"
     resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.0.tgz#beb437e7022b3b6d49019d088665303ebe9c14ba"
     integrity sha512-+Hp8fLp57wnUSt0tY0tHEXh4voZRDnoIrZPqlo3DPiI4y9lwg/jqx+1Om94/W6ZaPDOUbnjOt/99w66zk+l1Xg==
+  
+  cors@^2.8.5:
+    version "2.8.5"
+    resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.5.tgz#eac11da51592dd86b9f06f6e7ac293b3df875d29"
+    integrity sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==
+    dependencies:
+      object-assign "^4"
+      vary "^1"
   
   crypto-random-string@^2.0.0:
     version "2.0.0"
@@ -765,7 +778,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
     integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
   
-  nodemon@^2.0.6:
+  nodemon@^2.0.2:
     version "2.0.6"
     resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-2.0.6.tgz#1abe1937b463aaf62f0d52e2b7eaadf28cc2240d"
     integrity sha512-4I3YDSKXg6ltYpcnZeHompqac4E6JeAMpGm8tJnB9Y3T0ehasLa4139dJOcCrB93HHrUMsCrKtoAlXTqT5n4AQ==
@@ -797,6 +810,11 @@ Lockfile:
     version "4.5.0"
     resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-4.5.0.tgz#453354087e6ca96957bd8f5baf753f5982142129"
     integrity sha512-2s47yzUxdexf1OhyRi4Em83iQk0aPvwTddtFz4hnSSw9dCEsLEGf6SwIO8ss/19S9iBb5sJaOuTvTGDeZI00BQ==
+  
+  object-assign@^4:
+    version "4.1.1"
+    resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
+    integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
   
   on-finished@~2.3.0:
     version "2.3.0"
@@ -1154,7 +1172,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
     integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
   
-  vary@~1.1.2:
+  vary@^1, vary@~1.1.2:
     version "1.1.2"
     resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
     integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
