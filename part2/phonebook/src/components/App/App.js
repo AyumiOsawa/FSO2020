@@ -135,6 +135,10 @@ const App = () => {
       .then(data => {
         setPersons(data)
         console.log('fetched and set the initial data');
+        data.forEach(contact => {
+          console.log('name:', contact.name);
+          console.log('number:', contact.number);
+        })
       });
   }, []);
 
