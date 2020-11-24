@@ -1,28 +1,84 @@
+require('dotenv').config();
+// dotenv should be imported before the note model is imported
+// to ensure .env file is available globally
+
 // ######################################
 // # setting up a servre using built-in web servere module (http) to serve JSON.
 // ######################################
 // # use Node's built-in web server module
 // const http = require('http');
-let notes = [
-  {
-    id: 1,
-    content: "HTML is easy",
-    date: "2019-05-30T17:30:31.098Z",
-    important: true
-  },
-  {
-    id: 2,
-    content: "Browser can execute only Javascript",
-    date: "2019-05-30T18:39:34.091Z",
-    important: false
-  },
-  {
-    id: 3,
-    content: "GET and POST are the most important methods of HTTP protocol",
-    date: "2019-05-30T19:20:14.298Z",
-    important: true
-  }
-];
+
+
+// ######################################
+// # SET UP CONNECTION TO MONGODB
+// ######################################
+// const mongoose = require('mongoose');
+
+// if (process.argv.length < 3) {
+//   console.log('Please provide the password as an argument: node mongo.js <password>')
+//   process.exit(1)
+// }
+
+// const password = process.argv[2];
+// const url =　`mongodb+srv://fullstack:${password}@cluster0.xwxiz.mongodb.net/note_app?retryWrites=true&w=majority`;
+
+// connect to DB
+// mongoose.connect(url,
+//   {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//     useFindAndModify: false,
+//     useCreateIndex: true
+//   }
+// );
+// ######################################
+// # Create Schema and Model
+// ######################################
+// import the model created in './models/note'
+const Note = require('./models/note');
+
+
+// // create schema
+// const noteSchema = new mongoose.Schema({
+//   content: String,
+//   date: Date,
+//   important: Boolean,
+// });
+
+// modify the builtin toJSON() method.
+// add a new field id, and delete _id and __v(mongo versioning info).
+// noteSchema.set('toJSON', {
+//   transform: (document, returnedObject) => {
+//     // _id is an object, so convert it into string.
+//     returnedObject.id = returnedObject._id.toString();
+//     delete returnedObject._id;
+//     delete returnedObject.__v;
+//   }
+// });
+
+// create a model with schema
+// const Note = mongoose.model('Note', noteSchema);
+
+// let notes = [
+//   {
+//     id: 1,
+//     content: "HTML is easy",
+//     date: "2019-05-30T17:30:31.098Z",
+//     important: true
+//   },
+//   {
+//     id: 2,
+//     content: "Browser can execute only Javascript",
+//     date: "2019-05-30T18:39:34.091Z",
+//     important: false
+//   },
+//   {
+//     id: 3,
+//     content: "GET and POST are the most important methods of HTTP protocol",
+//     date: "2019-05-30T19:20:14.298Z",
+//     important: true
+//   }
+// ];
 // # To send the notes, content header must specify the data type as
 // # application/json.
 // # JSON.stringify makes a JS object/value into JSON format.
@@ -63,46 +119,60 @@ app.use(cors());
 // # let express show the static content
 app.use(express.static('build'));
 
-// # these event handlers are called every time when GET request is made to '/'
-// # and to '/api/notes'.
-// # api.get() method takes 2 params: request and response.
-// # request specifies the info about HTTP request to send. Express takes care of
-// # content (automatically set it as 'text/html' or 'appliction/json').
-// # response specifies how the request should be responded to. (by default,
-// # status code of the response is 200, ok.)
-app.get('/', (request, response) => {
-  response.send('<h1>Heya</h1>');
-})
+// // # these event handlers are called every time when GET request is made to '/'
+// // # and to '/api/notes'.
+// // # api.get() method takes 2 params: request and response.
+// // # request specifies the info about HTTP request to send. Express takes care of
+// // # content (automatically set it as 'text/html' or 'appliction/json').
+// // # response specifies how the request should be responded to. (by default,
+// // # status code of the response is 200, ok.)
+// app.get('/', (request, response) => {
+//   response.send('<h1>Heya</h1>');
+// })
 
-// # express automatically convert JS objects/values into json
+// // # express automatically convert JS objects/values into json
+// app.get('/api/notes', (request, response) => {
+//   response.json(notes);
+// })
+
+// To send the fetched data from API to MongoDB:
+// when a response comes back in the JSON format, toJSON() is automatically called.
 app.get('/api/notes', (request, response) => {
-  response.json(notes);
+  Note.find({}).then(notes => {
+    response.json(notes);
+  })
 })
 
 // # parameter is shown with : (value is some string).
 // # req object represents the HTTP request nad properties for the request query
 // # string.
 app.get('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id);
-  const note = notes.find(note => note.id === id);
+//   const id = Number(request.params.id);
+//   const note = notes.find(note => note.id === id);
+//
+// // # when the id is not found, return code 404 instead of undefined and code 200.
+// // # res.status() sets the HTTP status for the response.
+// // # res.end() ends the response process. If we need to respond with data, use
+// // # other methods like res.send() or res.json().
+//   if (note) {
+//     response.json(note);
+//   } else {
+//     response.status(404).end();
+//   }
 
-// # when the id is not found, return code 404 instead of undefined and code 200.
-// # res.status() sets the HTTP status for the response.
-// # res.end() ends the response process. If we need to respond with data, use
-// # other methods like res.send() or res.json().
-  if (note) {
+// # To get a note from MongoDB:
+  Note.findById(request.params.id)
+  .then(note => {
     response.json(note);
-  } else {
-    response.status(404).end();
-  }
+  })
 })
 
-app.delete('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  notes = notes.filter(note => note.id !== id)
-
-  response.status(204).end()
-})
+// app.delete('/api/notes/:id', (request, response) => {
+//   const id = Number(request.params.id)
+//   notes = notes.filter(note => note.id !== id)
+//
+//   response.status(204).end()
+// })
 
 // # post method. send all info of the new object inside of the request body in
 // # json format.
@@ -120,25 +190,32 @@ app.post('/api/notes', (request, response) => {
       error: 'content missing'
     })
   }
+  // const note = {
+  //   content: body.content,
+  //   important: body.important || false,
+  //   date: new Date(),
+  //   id: generateID(),
+  // }
+  //  notes = notes.concat(note);
+  // response.json(note);
+  // const generateID = () => {
+  //   const maxId = notes.length > 0
+  //   ? Math.max(...notes.map(note => note.id))
+  //   : 0
+  //   return maxId + 1;
+  // }
 
-  const note = {
+  // # To post the new record to MongoDB:
+  const note = new Note({
     content: body.content,
     important: body.important || false,
     date: new Date(),
-    id: generateID(),
-  }
+  })
 
-  notes = notes.concat(note);
-
-  response.json(note);
+  note.save().then(savedNote => {
+    response.json(savedNote);
+  })
 })
-
-const generateID = () => {
-  const maxId = notes.length > 0
-  ? Math.max(...notes.map(note => note.id))
-  : 0
-  return maxId + 1;
-}
 
 // # creating my own middleware:
 // # next in the arguments is a function that pass the request to the next
@@ -168,7 +245,7 @@ app.use(unknownEndpoint);
 // const PORT = 3001;
 
 // # For deploying through Heroku
-const PORT = process.env.port || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 })
